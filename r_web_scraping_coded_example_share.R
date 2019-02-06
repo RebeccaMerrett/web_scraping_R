@@ -32,26 +32,19 @@ urls
 
 # Grab all datetimes on the page
 datetime <- marketwatch_bitcoin_articles %>%
-  html_nodes("div.deemphasized span.invisible") %>% #See HTML source code for data within this tag
+  html_nodes("div.deemphasized span") %>% #See HTML source code for data within this tag
   html_text()
 
 datetime
 
-# Only first few datetimes are included in this div
-# Grab datetimes for all URLs on the landing page
-# and add these onto to the end of datetime vector
-datetime2 <- marketwatch_bitcoin_articles %>%
-  html_nodes("div.deemphasized span") %>%
-  html_text()
-
-datetime2
-
-# Check the index where datetimes for other 
-# URLs start and loop through from that 
-# index to the end of all entries
-for(i in datetime2[13:length(datetime2)]){
-  datetime <- c(datetime, i)
+# Filter datetimes that do not follow a consistent format
+datetime2 <- c()
+for(i in datetime){
+  correct_datetime <- grep("Today", i, invert=T, value=T)
+  datetime2 <- append(datetime2, correct_datetime)
 }
+
+datetime <- datetime2
 
 datetime
 
